@@ -1,0 +1,308 @@
+
+
+
+/* --------------------------------------------------------------------------------------- */
+
+/* Mediaquery */
+@media (max-width: 992px) {
+  .header {
+    top: -3px;
+    padding: 0.8rem 5%;
+  }
+
+  .navbar {
+    right: 16%;
+    gap: 0.5rem; /* jarak antar menu lebih rapat */
+  }
+
+  .navbar a {
+    margin: 0 0.1rem; /* rapetin jarak kiri-kanan tiap link */
+  }
+
+  .card-decor {
+    width: 50%;
+    max-width: 800;
+  }
+  
+  .card1 {
+    top: 3px;
+    right: -3rem;
+  }
+
+  .card3 {
+    top: 0;
+  }
+
+  .card5 {
+    width: 30%;
+  }
+
+  .hero-text{
+    font-size: 20px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    align-items: center;
+    text-align: center;
+  }
+
+  .top-left {
+    width: 32%;
+    bottom: 11rem;
+  }
+
+  .top-right {
+    width: 40%;
+    bottom: 10rem;
+  }
+  
+  .bottom-left {
+    width: 30%;
+    top: 11rem;
+    right: 12px;
+  }
+  
+}
+
+
+
+@media (max-width: 768px) {
+  .icons {
+    display: block;
+    margin-right: 50px;
+  }
+
+  #check:checked ~ .icons #menu-icon {
+    display: none;
+  }
+
+  .icons #close-icon {
+    display: none;
+  }
+
+  #check:checked ~ .icons #close-icon {
+    display: block;
+  }
+
+  .logo img {
+    width: 18%;
+    height: auto;
+  }
+
+  .vector {
+    width: 80px; /* diameter lingkaran */
+    height: 40px;
+    background: #2b485d; /* warna background */
+    border-radius: 50%; /* biar bulat */
+    display: flex; /* buat center icon */
+    align-items: center;
+    justify-content: center;
+  }
+
+  .navbar {
+    position: absolute;
+    top: 80%;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: #2b485d;
+    backdrop-filter: blur(50px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: 0.3s ease;
+    border-radius: 0px;
+    z-index: -2;
+  }
+
+  .header {
+    padding: 0.9rem 5%;
+  }
+  #check:checked ~ .navbar {
+    height: 25rem;
+    display: block;
+  }
+
+  .navbar a {
+    display: block;
+    font-size: 1.1rem;
+    margin: 1.5rem 0;
+    text-align: center;
+    transform: translateY(-50px);
+    opacity: 0;
+    transition: 0.3s ease;
+  }
+
+  #check:checked ~ .navbar a {
+    transform: translateY(0);
+    transition-delay: calc(0.15s * var(--i));
+    opacity: 2;
+  }
+
+  .hero-card {
+    width: 90%;
+    margin: 100px auto;
+    min-height: 600px;
+    border-radius: 15px;
+    background-position: center;
+    background-size: cover;
+    padding: 40px 20px;
+  }
+  .card-decor {
+    width: 80%;
+    max-width: 900px;
+  }
+
+  .card1 {
+    top: 0%;
+    right: -20%;
+  }
+  .card2 {
+    height: 50%;
+    width: 100%;
+    bottom: -1%;
+    left: -10%;
+  }
+  .card3 {
+    width: 60%;
+    top: 0%;
+    left: -15%;
+    transform: rotate(-0deg);
+  }
+  .card4 {
+    height: 50%;
+    width: 100%;
+    bottom: -1%;
+    right: -40%;
+  }
+  .card5 {
+    width: 50%;
+    bottom: 4%;
+    right: 0%;
+  }
+
+  .hero-text {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    padding: 0 20px;
+  }
+
+  .top-left {
+    width: 160px;
+    bottom: 13rem;
+    left: -5px;
+    transform: rotate(-7deg);
+  }
+
+  .top-right {
+    width: 150px;
+    bottom: 12rem;
+    right: 0rem;
+    transform: rotate(180deg);
+  }
+
+  .bottom-left {
+    width: 160px;
+    top: 13rem;
+    left: 2rem;
+    transform: rotate(-30deg);
+  }
+
+    .services {
+   bottom: 10rem;
+  }
+
+  .unesco {
+  width: 20%;
+  max-width: 800;
+  position: absolute
+  
+  ;
+}
+
+  .un1 {
+    width: 15%;
+    top: 21%;
+    left: 0%;
+  }
+
+  .un2 {
+    width: 25%;
+    top: 20%;
+    right: 0%;
+  }
+
+    .ele1 {
+    position: relative;
+    top: 0;
+    width: 80%;
+    margin: 0 auto;
+    display: block;
+  }
+}
+
+@media (max-width: 392px){
+  .hero-text {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 10px;
+  }
+
+  .top-left {
+    bottom: 15rem;
+  }
+  .top-right {
+    bottom: 13rem;
+  }
+  .bottom-left {
+    top: 14rem;
+  }
+}
+
+@media (max-width: 384px){
+  .hero-text {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 10px;
+  }
+
+  .top-left {
+    bottom: 15rem;
+  }
+  .top-right {
+    bottom: 14rem;
+  }
+  .bottom-left{
+    top: 15rem;
+  }
+}
+
+@media (max-width: 376px){
+  .hero-text {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 10px;
+  }
+
+  .top-left {
+    bottom: 16rem;
+  }
+  .top-right {
+    bottom: 15rem;
+    right: -1rem;
+  }
+  .bottom-left {
+    top: 17rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .product-section {
+    grid-template-columns: 1fr; /* ubah jadi 1 kolom */
+    gap: 1.5rem; /* beri jarak antar card */
+    width: 90%;
+  }
+
+  .product-card {
+    width: 100%; /* pastikan card memenuhi lebar grid */
+  }
+  
+}
