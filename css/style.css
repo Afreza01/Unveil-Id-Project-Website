@@ -376,7 +376,9 @@ body {
 }
 
 /* about us */
-
+.bg-about-services{
+  background-color: #eaf2ff;
+}
 .about-us-section {
   top: -11rem;
   position: relative;
@@ -436,7 +438,7 @@ body {
 }
 
 .un1 {
-  width: 15%;
+  width: 100%;
   position: absolute;
   bottom: 60%;
   left: 0%;
@@ -444,17 +446,17 @@ body {
 }
 
 .un2 {
-  width: 25%;
+  width: 100%;
   position: absolute;
   bottom: 60%;
-  right: 0%;
+  left: 70rem;
   z-index: 1;
 }
 
 /* SECTION WRAPPER */
 .services {
   text-align: center;
-  padding: 100px 5%;
+  padding: 0px 5%;
 }
 
 .section-title {
