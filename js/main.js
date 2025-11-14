@@ -120,3 +120,27 @@ window.addEventListener("resize", () => {
 
 updateIndicators();
 updateActiveCards();
+
+
+// MARQUEE EFFECT JAVASCRIPT SECTION
+function pulseDot(dot) {
+  let scale = 1;
+  let growing = true;
+
+  setInterval(() => {
+    if (growing) {
+      scale += 0.05;
+      if (scale >= 1.35) growing = false;
+    } else {
+      scale -= 0.05;
+      if (scale <= 1) growing = true;
+    }
+    dot.style.transform = `scale(${scale})`;
+  }, 60);
+}
+
+// Ambil semua .marquee-dot
+document.querySelectorAll(".marquee-dot").forEach(dot => {
+  pulseDot(dot);
+});
+// END OF MARQUEE EFFECT JAVASCRIPT SECTION
