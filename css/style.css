@@ -365,7 +365,9 @@ body {
 
 .back-kotak {
   position: relative;
-  top: -10rem;
+  top: -24rem;
+  left: 1rem;
+  object-fit: cover;
   width: 100%; /* samakan dengan hero-card */
   margin: -4px auto 0 auto; /* margin-top negatif biar menempel tanpa jarak putih */
   overflow: hidden;
@@ -483,7 +485,7 @@ body {
 
 .section-title {
   font-size: 32px;
-  font-weight: 700;
+  font-weight: bold;
   color: #15232D;
   margin-bottom: 60px;
   letter-spacing: 1px;
@@ -599,7 +601,7 @@ body {
 /* Background PROJECT */
 .bg-project {
   position: absolute;
-  top: 0;
+  top: -3.8rem;
   left: 0;
   width: 100%;
   height: 100%;
@@ -648,46 +650,48 @@ body {
   font-size: 35px;
   height: 40vh;
   color: #15232D;
-  font-weight: 600;
+  font-weight: bold;
   text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8);
 }
 
 .carousel-container {
-  position: relative;
-  width: 100%;
-  max-width: 1400px;
-  overflow: hidden;
-  margin-top: 40px;
-}
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    overflow: hidden;
+    margin-top: 40px;
+  }
 
-.carousel {
-  display: flex;
-  align-items: center;
-  transition: transform 0.5s ease;
-}
+  .carousel {
+    display: flex;
+    align-items: center;
+    transition: transform 0.5s ease;
+  }
 
-.card {
-  position: relative;
-  min-width: 500px;
-  margin: 0 15px;
-  border-radius: 20px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
+  /* Card luar */
+  .card {
+    position: relative;
+    min-width: 500px;
+    margin: 0 15px;
+    border-radius: 20px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
 
-.card-inner {
-  transition: transform 0.4s ease, opacity 0.4s ease;
-  transform-origin: center center;
-  will-change: transform;
-}
+  /* Elemen di dalam card (yang di-scale) */
+  .card-inner {
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    transform-origin: center center;
+    will-change: transform;
+  }
 
-.card img {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  display: block;
-  pointer-events: none;
-}
+  .card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
 
 .overlay {
   position: absolute;
@@ -724,33 +728,37 @@ body {
   transform: translateY(1px); /* naikin sedikit biar sejajar */
 }
 
-.card.active .card-inner {
-  transform: none;
-}
 
-.card.side .card-inner {
-  transform: scale(0.9);
-  opacity: 0.7;
-}
-.indicators {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  gap: 8px;
-}
+  /* Efek aktif dan samping */
+  .card.active .card-inner {
+     transform: none;
+  }
 
-.dot {
-  width: 10px;
-  height: 10px;
-  background-color: #b4b4b4;
-  border-radius: 50%;
-  transition: background-color 0.3s, transform 0.3s;
-}
+  .card.side .card-inner {
+    transform: none;
+    opacity: 1;
+  }
 
-.dot.active {
-  background-color: #014ab6;
-  transform: scale(1.3);
-}
+  /* Indikator */
+  .indicators {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    background-color: #b4b4b4;
+    border-radius: 50%;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+
+  .dot.active {
+    background-color: #014AB6;
+    transform: scale(1.3);
+  }
 /* END PROJECT */
 
 /* effect marquee section page START */
@@ -765,7 +773,7 @@ body {
   display: flex;
   height: 100px;
   white-space: nowrap;
-  animation: scroll 15s linear infinite;
+  animation: scroll 11s linear infinite;
 }
 .marquee span {
   display: inline-flex;
@@ -773,22 +781,40 @@ body {
   color: white;
   font-size: 1.5rem;
   font-weight: bold;
-  padding: 0 2rem;
+  margin-left: 15px;
   letter-spacing: 1px;
 }
-.marquee-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #007bff;
-  margin-right: 10px;
-  
+.dot-wrap {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  margin-right: 15px;
   display: inline-block;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.6);
-
-  /* tidak ada animasi CSS sama sekali */
-  transform: scale(1); 
+  margin-right: 25px;
 }
+
+.marquee-dot-static {
+  position: absolute;
+  top: 3px;
+  left: 2.5px;
+  width: 10px;
+  height: 10px;
+  background-color: #2684FF;
+  border-radius: 50%;
+  z-index: 2; /* di depan */
+}
+
+.marquee-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 15px;
+  height: 15px;
+  background-color: #014ab6;
+  border-radius: 50%;
+  z-index: 1; /* di belakang */
+}
+
 
 @keyframes scroll {
   from {

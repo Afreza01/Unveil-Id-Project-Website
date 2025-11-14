@@ -22,13 +22,14 @@ const loader = document.getElementById("loader");
  });
 
 // =======================
-// GRID SLIDE PROJECT
+// GRID SLIDE PROJECT - INFINITE LOOP VERSION
 // =======================
 const carousel = document.getElementById("carousel");
 let cards = Array.from(document.querySelectorAll(".card"));
 const totalOriginal = cards.length;
 let cardWidth = cards[0].offsetWidth + 30;
 let currentIndex = 0;
+let isTransitioning = false; // ✅ TAMBAH: flag untuk prevent multiple transitions
 
 // Clone depan & belakang untuk looping halus
 cards.forEach((card) => {
@@ -71,14 +72,54 @@ function centerCarousel() {
   const centerOffset = (container.offsetWidth - cardWidth) / 2;
   const translateX =
     -currentIndex * cardWidth - totalOriginal * cardWidth + centerOffset;
-  carousel.style.transform = `translateX(${translateX}px)`; 
+  carousel.style.transform = `translateX(${translateX}px)`;
+}
+
+// ✅ TAMBAH: Function untuk handle infinite loop reset
+function handleInfiniteLoop() {
+  // Jika melewati batas kanan (clone depan)
+  if (currentIndex >= totalOriginal) {
+    setTimeout(() => {
+      carousel.style.transition = "none"; // Matikan transition
+      currentIndex = currentIndex % totalOriginal; // Reset ke posisi asli
+      centerCarousel();
+      updateActiveCards();
+      
+      // Nyalakan kembali transition setelah reset
+      setTimeout(() => {
+        carousel.style.transition = "transform 0.5s ease";
+        isTransitioning = false;
+      }, 50);
+    }, 500); // Tunggu sampai transition selesai (0.5s)
+  }
+  // Jika melewati batas kiri (clone belakang)
+  else if (currentIndex < 0) {
+    setTimeout(() => {
+      carousel.style.transition = "none";
+      currentIndex = totalOriginal + (currentIndex % totalOriginal);
+      centerCarousel();
+      updateActiveCards();
+      
+      setTimeout(() => {
+        carousel.style.transition = "transform 0.5s ease";
+        isTransitioning = false;
+      }, 50);
+    }, 500);
+  } else {
+    isTransitioning = false;
+  }
 }
 
 function updateCarousel() {
+  if (isTransitioning) return; // ✅ Prevent multiple transitions
+  isTransitioning = true;
+  
   carousel.style.transition = "transform 0.5s ease";
   centerCarousel();
   updateActiveCards();
   updateIndicators();
+  
+  handleInfiniteLoop(); // ✅ TAMBAH: Handle infinite loop
 }
 
 // Jalankan pertama kali
@@ -101,7 +142,7 @@ window.addEventListener("pointermove", (e) => {
   const centerOffset = (container.offsetWidth - cardWidth) / 2;
   const translateX =
     -currentIndex * cardWidth - totalOriginal * cardWidth + centerOffset + delta;
-  carousel.style.transform = `translateX(${translateX}px)`; // ✅ FIXED
+  carousel.style.transform = `translateX(${translateX}px)`;
 });
 
 window.addEventListener("pointerup", (e) => {
@@ -117,6 +158,8 @@ window.addEventListener("resize", () => {
   cardWidth = cards[0].offsetWidth + 30;
   centerCarousel();
 });
+
+
 
 updateIndicators();
 updateActiveCards();
