@@ -74,6 +74,18 @@
     text-align: center;
   }
 
+    .service-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .service-card {
+    text-align: center;
+  }
+  .service-card h4 {
+    justify-content: center;
+    gap: 6px;
+  }
+
   .icons {
     display: block;
     margin-right: 50px;
