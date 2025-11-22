@@ -22,32 +22,65 @@ const loader = document.getElementById("loader");
  });
 
 // =======================
-// GRID SLIDE PROJECT - INFINITE LOOP VERSION
+// CAROUSEL FIXED VERSION
 // =======================
-const carousel = document.getElementById("carousel");
-let cards = Array.from(document.querySelectorAll(".card"));
-const totalOriginal = cards.length;
-let cardWidth = cards[0].offsetWidth + 30;
-let currentIndex = 0;
-let isTransitioning = false; // ✅ TAMBAH: flag untuk prevent multiple transitions
 
-// Clone depan & belakang untuk looping halus
+// Track asli kamu → ID projectCarousel
+// =======================
+// PROJECT CAROUSEL - FINAL
+// =======================
+const carousel = document.getElementById("projectCarousel");
+const viewport = document.querySelector(".project-carousel-viewport");
+
+// Ambil semua card original
+let cards = Array.from(document.querySelectorAll(".project-carousel-card"));
+const totalOriginal = cards.length;
+
+let currentIndex = 0;          // index logical (0..totalOriginal-1)
+let isTransitioning = false;
+let isDragging = false;
+let startX = 0;
+let startTranslateX = 0;
+
+// =======================
+// CLONE DEPAN & BELAKANG
+// =======================
 cards.forEach((card) => {
   const cloneFront = card.cloneNode(true);
   const cloneBack = card.cloneNode(true);
-  carousel.appendChild(cloneFront);
-  carousel.insertBefore(cloneBack, carousel.firstChild);
+  carousel.appendChild(cloneFront);                     // clone di belakang
+  carousel.insertBefore(cloneBack, carousel.firstChild); // clone di depan
 });
-cards = Array.from(document.querySelectorAll(".card"));
 
-// Indikator
-const indicators = document.getElementById("indicators");
+// Update list cards (sekarang: clone belakang + original + clone depan)
+cards = Array.from(document.querySelectorAll(".project-carousel-card"));
+
+// =======================
+// FUNGSI BANTU: LEBAR CARD
+// =======================
+function getCardWidth() {
+  const card = cards[0];
+  const rect = card.getBoundingClientRect();
+  const style = window.getComputedStyle(card);
+  const marginLeft = parseFloat(style.marginLeft) || 0;
+  const marginRight = parseFloat(style.marginRight) || 0;
+  return rect.width + marginLeft + marginRight;
+}
+
+let cardWidth = getCardWidth();
+
+// =======================
+// INDICATORS
+// =======================
+const indicators = document.getElementById("projectCarouselIndicators");
+indicators.innerHTML = ""; // bersihin kalau ada sisa
+
 for (let i = 0; i < totalOriginal; i++) {
   const dot = document.createElement("div");
   dot.classList.add("dot");
   indicators.appendChild(dot);
 }
-const dots = document.querySelectorAll(".dot");
+const dots = Array.from(indicators.querySelectorAll(".dot"));
 
 function updateIndicators() {
   const activeIndex =
@@ -55,114 +88,148 @@ function updateIndicators() {
   dots.forEach((dot, i) => dot.classList.toggle("active", i === activeIndex));
 }
 
+// =======================
+// ACTIVE CARD (TENGAH)
+// =======================
 function updateActiveCards() {
-  cards.forEach((card, index) => {
-    card.classList.remove("active", "side");
-    if (index === currentIndex + totalOriginal) card.classList.add("active");
-    else if (
-      index === currentIndex + totalOriginal - 1 ||
-      index === currentIndex + totalOriginal + 1
-    )
-      card.classList.add("side");
-  });
-}
+  cards.forEach((card) => card.classList.remove("active"));
 
-function centerCarousel() {
-  const container = document.querySelector(".carousel-container");
-  const centerOffset = (container.offsetWidth - cardWidth) / 2;
-  const translateX =
-    -currentIndex * cardWidth - totalOriginal * cardWidth + centerOffset;
-  carousel.style.transform = `translateX(${translateX}px)`;
-}
-
-// ✅ TAMBAH: Function untuk handle infinite loop reset
-function handleInfiniteLoop() {
-  // Jika melewati batas kanan (clone depan)
-  if (currentIndex >= totalOriginal) {
-    setTimeout(() => {
-      carousel.style.transition = "none"; // Matikan transition
-      currentIndex = currentIndex % totalOriginal; // Reset ke posisi asli
-      centerCarousel();
-      updateActiveCards();
-      
-      // Nyalakan kembali transition setelah reset
-      setTimeout(() => {
-        carousel.style.transition = "transform 0.5s ease";
-        isTransitioning = false;
-      }, 50);
-    }, 500); // Tunggu sampai transition selesai (0.5s)
+  const physicalIndex = currentIndex + totalOriginal; // block original di tengah
+  if (cards[physicalIndex]) {
+    cards[physicalIndex].classList.add("active");
   }
-  // Jika melewati batas kiri (clone belakang)
-  else if (currentIndex < 0) {
-    setTimeout(() => {
-      carousel.style.transition = "none";
-      currentIndex = totalOriginal + (currentIndex % totalOriginal);
-      centerCarousel();
-      updateActiveCards();
-      
-      setTimeout(() => {
-        carousel.style.transition = "transform 0.5s ease";
-        isTransitioning = false;
-      }, 50);
-    }, 500);
+}
+
+// =======================
+// HITUNG TRANSLATE UNTUK INDEX
+// =======================
+function getTranslateForIndex(index) {
+  const viewportWidth = viewport.getBoundingClientRect().width;
+  cardWidth = getCardWidth(); // selalu refresh biar responsive valid
+
+  const physicalIndex = index + totalOriginal; // index real di DOM
+  const translateX =
+    -(physicalIndex * cardWidth) + (viewportWidth - cardWidth) / 2;
+
+  return translateX;
+}
+
+// =======================
+// SNAP KE INDEX (ANIMATED / INSTANT)
+// =======================
+function snapToIndex(animate = true) {
+  const translateX = getTranslateForIndex(currentIndex);
+
+  if (animate) {
+    isTransitioning = true;
+    carousel.style.transition = "transform 0.45s ease";
   } else {
     isTransitioning = false;
+    carousel.style.transition = "none";
   }
-}
 
-function updateCarousel() {
-  if (isTransitioning) return; // ✅ Prevent multiple transitions
-  isTransitioning = true;
-  
-  carousel.style.transition = "transform 0.5s ease";
-  centerCarousel();
+  carousel.style.transform = `translateX(${translateX}px)`;
   updateActiveCards();
   updateIndicators();
-  
-  handleInfiniteLoop(); // ✅ TAMBAH: Handle infinite loop
 }
 
-// Jalankan pertama kali
-updateCarousel();
+// =======================
+// INFINITE LOOP HANDLING
+// =======================
+carousel.addEventListener("transitionend", () => {
+  if (!isTransitioning) return;
+  isTransitioning = false;
 
-// Drag support
-let isDragging = false;
-let startX = 0;
+  if (currentIndex >= totalOriginal) {
+    currentIndex = currentIndex % totalOriginal;
+    snapToIndex(false); // lompat tanpa animasi
+  } else if (currentIndex < 0) {
+    currentIndex =
+      ((currentIndex % totalOriginal) + totalOriginal) % totalOriginal;
+    snapToIndex(false);
+  }
+});
 
+// =======================
+// UPDATE SLIDE (NEXT/PREV)
+// =======================
+function updateCarousel(step) {
+  if (isTransitioning) return;
+  if (typeof step === "number") {
+    currentIndex += step;
+  }
+  snapToIndex(true);
+}
+
+// =======================
+// DRAG / SWIPE HANDLING
+// =======================
 carousel.addEventListener("pointerdown", (e) => {
+  if (isTransitioning) return;
+
   isDragging = true;
   startX = e.clientX;
+
+  // ambil posisi translateX terakhir
+  const matrix = window.getComputedStyle(carousel).transform;
+  if (matrix && matrix !== "none") {
+    const values = matrix.match(/matrix.*\((.+)\)/);
+    startTranslateX = values ? parseFloat(values[1].split(",")[4]) : 0;
+  } else {
+    startTranslateX = getTranslateForIndex(currentIndex);
+  }
+
   carousel.style.transition = "none";
 });
 
 window.addEventListener("pointermove", (e) => {
   if (!isDragging) return;
+
   const delta = e.clientX - startX;
-  const container = document.querySelector(".carousel-container");
-  const centerOffset = (container.offsetWidth - cardWidth) / 2;
-  const translateX =
-    -currentIndex * cardWidth - totalOriginal * cardWidth + centerOffset + delta;
-  carousel.style.transform = `translateX(${translateX}px)`;
+  const moveX = startTranslateX + delta;
+
+  carousel.style.transform = `translateX(${moveX}px)`;
 });
 
 window.addEventListener("pointerup", (e) => {
   if (!isDragging) return;
-  const delta = e.clientX - startX;
-  if (delta < -100) currentIndex++;
-  else if (delta > 100) currentIndex--;
-  updateCarousel();
   isDragging = false;
+
+  const delta = e.clientX - startX;
+
+  // threshold beda untuk desktop & mobile
+  const threshold = window.innerWidth > 1024 ? 60 : 100;
+
+  if (delta < -threshold) {
+    // geser kiri → next card
+    updateCarousel(1);
+  } else if (delta > threshold) {
+    // geser kanan → prev card
+    updateCarousel(-1);
+  } else {
+    // kurang dari threshold → balik ke posisi semula
+    snapToIndex(true);
+  }
 });
 
+// =======================
+// RESIZE → RECALC & CENTER
+// =======================
 window.addEventListener("resize", () => {
-  cardWidth = cards[0].offsetWidth + 30;
-  centerCarousel();
+  cardWidth = getCardWidth();
+  snapToIndex(false);
 });
 
-
-
+// =======================
+// INIT
+// =======================
+snapToIndex(false);
 updateIndicators();
 updateActiveCards();
+
+
+
+
 
 
 // MARQUEE EFFECT JAVASCRIPT SECTION
