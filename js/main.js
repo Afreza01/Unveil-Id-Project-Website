@@ -55,9 +55,6 @@ cards.forEach((card) => {
 // Update list cards (sekarang: clone belakang + original + clone depan)
 cards = Array.from(document.querySelectorAll(".project-carousel-card"));
 
-// =======================
-// FUNGSI BANTU: LEBAR CARD
-// =======================
 function getCardWidth() {
   const card = cards[0];
   const rect = card.getBoundingClientRect();
@@ -69,9 +66,7 @@ function getCardWidth() {
 
 let cardWidth = getCardWidth();
 
-// =======================
 // INDICATORS
-// =======================
 const indicators = document.getElementById("projectCarouselIndicators");
 indicators.innerHTML = ""; // bersihin kalau ada sisa
 
@@ -88,9 +83,7 @@ function updateIndicators() {
   dots.forEach((dot, i) => dot.classList.toggle("active", i === activeIndex));
 }
 
-// =======================
 // ACTIVE CARD (TENGAH)
-// =======================
 function updateActiveCards() {
   cards.forEach((card) => card.classList.remove("active"));
 
@@ -100,9 +93,7 @@ function updateActiveCards() {
   }
 }
 
-// =======================
 // HITUNG TRANSLATE UNTUK INDEX
-// =======================
 function getTranslateForIndex(index) {
   const viewportWidth = viewport.getBoundingClientRect().width;
   cardWidth = getCardWidth(); // selalu refresh biar responsive valid
@@ -114,9 +105,7 @@ function getTranslateForIndex(index) {
   return translateX;
 }
 
-// =======================
-// SNAP KE INDEX (ANIMATED / INSTANT)
-// =======================
+// SNAP KE INDEX ( animated )
 function snapToIndex(animate = true) {
   const translateX = getTranslateForIndex(currentIndex);
 
@@ -133,16 +122,15 @@ function snapToIndex(animate = true) {
   updateIndicators();
 }
 
-// =======================
 // INFINITE LOOP HANDLING
-// =======================
+
 carousel.addEventListener("transitionend", () => {
   if (!isTransitioning) return;
   isTransitioning = false;
 
   if (currentIndex >= totalOriginal) {
     currentIndex = currentIndex % totalOriginal;
-    snapToIndex(false); // lompat tanpa animasi
+    snapToIndex(false); 
   } else if (currentIndex < 0) {
     currentIndex =
       ((currentIndex % totalOriginal) + totalOriginal) % totalOriginal;
@@ -150,9 +138,8 @@ carousel.addEventListener("transitionend", () => {
   }
 });
 
-// =======================
 // UPDATE SLIDE (NEXT/PREV)
-// =======================
+
 function updateCarousel(step) {
   if (isTransitioning) return;
   if (typeof step === "number") {
@@ -161,16 +148,14 @@ function updateCarousel(step) {
   snapToIndex(true);
 }
 
-// =======================
 // DRAG / SWIPE HANDLING
-// =======================
+
 carousel.addEventListener("pointerdown", (e) => {
   if (isTransitioning) return;
 
   isDragging = true;
   startX = e.clientX;
 
-  // ambil posisi translateX terakhir
   const matrix = window.getComputedStyle(carousel).transform;
   if (matrix && matrix !== "none") {
     const values = matrix.match(/matrix.*\((.+)\)/);
@@ -197,32 +182,27 @@ window.addEventListener("pointerup", (e) => {
 
   const delta = e.clientX - startX;
 
-  // threshold beda untuk desktop & mobile
   const threshold = window.innerWidth > 1024 ? 60 : 100;
 
   if (delta < -threshold) {
-    // geser kiri → next card
     updateCarousel(1);
   } else if (delta > threshold) {
-    // geser kanan → prev card
+
     updateCarousel(-1);
   } else {
-    // kurang dari threshold → balik ke posisi semula
+
     snapToIndex(true);
   }
 });
 
-// =======================
 // RESIZE → RECALC & CENTER
-// =======================
 window.addEventListener("resize", () => {
   cardWidth = getCardWidth();
   snapToIndex(false);
 });
 
-// =======================
 // INIT
-// =======================
+
 snapToIndex(false);
 updateIndicators();
 updateActiveCards();
